@@ -3,7 +3,7 @@ import { SignUpController } from './signup-controller'
 import { AddUser } from '@/src/domain/use-cases/add-user'
 import { makeAddAccount } from '../tests/factories'
 import { ServerError } from '../errors/server-error'
-import { serverError } from '../helpers/http-helper'
+import { created, serverError } from '../helpers/http-helper'
 import { makeUserModel } from '@/src/application/tests/factories'
 
 interface SutTypes {
@@ -43,7 +43,7 @@ describe('SignUp Controller', () => {
     })
   })
 
-  it('Should return 500 if AddCompany throws', async () => {
+  it('Should return 500 if AddUser throws', async () => {
     const { addUserStub, sut } = makeSut()
     vi.spyOn(addUserStub, 'add').mockImplementation(async () =>
       Promise.reject(new Error()),
@@ -55,5 +55,16 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse).toEqual(serverError(new ServerError(null)))
+  })
+
+  it('Should return 201 if correct data is provided', async () => {
+    const { sut } = makeSut()
+
+    const httpResponse = await sut.handle({
+      body: makeUserModel(),
+    })
+
+    expect(httpResponse).toEqual(created(httpResponse.body))
+    expect(httpResponse.statusCode).toBe(201)
   })
 })
