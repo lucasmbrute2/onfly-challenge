@@ -13,6 +13,7 @@ export class DbAddUserUseCase {
     if (user) return null
 
     user = new User(userData)
-    return await this.addUserRepository.add(user)
+    await this.addUserRepository.add(user)
+    return user
   }
 }
