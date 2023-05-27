@@ -1,5 +1,5 @@
 import { User } from '@/src/domain/entities/user'
-import { AddUserRepository } from '../protocols'
+import { AddUserRepository } from '../protocols/user'
 import { AddUserModel } from '@/src/domain/use-cases/add-user'
 
 export class DbAddUserUseCase {

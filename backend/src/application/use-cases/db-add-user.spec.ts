@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { AddUserRepository } from '../protocols'
+import { AddUserRepository } from '../protocols/user'
 import { makeAddUserRepository, makeUserModel } from '../tests/factories'
 import { DbAddUserUseCase } from './db-add-user'
 import { User } from '@/src/domain/entities/user'
