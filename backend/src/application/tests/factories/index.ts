@@ -1,5 +1,5 @@
 import { User } from '@/src/domain/entities/user'
-import { AddUserRepository } from '../../protocols/user'
+import { AddUserRepository, FindUserByIdRepository } from '../../protocols/user'
 import { AddUserModel } from '@/src/domain/use-cases/add-user'
 
 export const makeUserModel = (): AddUserModel => ({
@@ -17,4 +17,14 @@ export const makeAddUserRepository = (): AddUserRepository => {
   }
 
   return new AddUserRepositoryStub()
+}
+
+export const makeFindUserByIdRepository = (): FindUserByIdRepository => {
+  class FindUserByIdRepositoryStub implements FindUserByIdRepository {
+    async find(id: string): Promise<User> {
+      return Promise.resolve(null)
+    }
+  }
+
+  return new FindUserByIdRepositoryStub()
 }
