@@ -1,18 +1,19 @@
 import { User } from '@/src/domain/entities/user'
-import { AddUserRepository, FindUserByIdRepository } from '../protocols/user'
+import { AddUserRepository } from '../protocols/user'
 import { AddUserModel } from '@/src/domain/use-cases/add-user'
 import { Hasher } from '../protocols/cryptography'
+import { FindUserByUsernameRepository } from '../protocols/user/find-user-by-username'
 
 export class DbAddUserUseCase {
   constructor(
     private readonly hasher: Hasher,
     private readonly addUserRepository: AddUserRepository,
-    private readonly findUserByIdRepository: FindUserByIdRepository,
+    private readonly findByUsername: FindUserByUsernameRepository,
   ) {}
 
   async add(userData: AddUserModel): Promise<User | null> {
-    const userAlreadyExists = await this.findUserByIdRepository.findById(
-      userData.id,
+    const userAlreadyExists = await this.findByUsername.findByUsername(
+      userData.username,
     )
     if (userAlreadyExists) return null
 

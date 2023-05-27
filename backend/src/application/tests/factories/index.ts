@@ -2,9 +2,9 @@ import { User } from '@/src/domain/entities/user'
 import { AddUserRepository, FindUserByIdRepository } from '../../protocols/user'
 import { AddUserModel } from '@/src/domain/use-cases/add-user'
 import { Hasher } from '../../protocols/cryptography'
+import { FindUserByUsernameRepository } from '../../protocols/user/find-user-by-username'
 
 export const makeUserModel = (): AddUserModel => ({
-  id: 'any-id',
   name: 'any-name',
   password: 'any-password',
   username: 'any-username',
@@ -29,6 +29,17 @@ export const makeFindUserByIdRepository = (): FindUserByIdRepository => {
 
   return new FindUserByIdRepositoryStub()
 }
+
+export const makeFindByUsernameRepositoryStub =
+  (): FindUserByUsernameRepository => {
+    class FindByUsernameRepositoryStub implements FindUserByUsernameRepository {
+      async findByUsername(username: string): Promise<User> {
+        return Promise.resolve(null)
+      }
+    }
+
+    return new FindByUsernameRepositoryStub()
+  }
 
 export const makeHasherStub = (): Hasher => {
   class HasherStub implements Hasher {
