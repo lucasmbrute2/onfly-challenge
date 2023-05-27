@@ -48,6 +48,15 @@ describe('DbAddUser Use Case', () => {
     expect(hashSpy).toHaveBeenCalledWith(addAccountParams.password)
   })
 
+  it('Should throw if Hasher throws', async () => {
+    const { sut, hasherStub } = makeSut()
+    vi.spyOn(hasherStub, 'hash').mockRejectedValueOnce(
+      Promise.resolve(new Error()),
+    )
+    const promise = sut.add(makeUserModel())
+    await expect(promise).rejects.toThrow()
+  })
+
   it('Should call AddUserRepository with correct values', async () => {
     const { addUserRepositoryStub, sut } = makeSut()
     const addSpy = vi.spyOn(addUserRepositoryStub, 'add')
