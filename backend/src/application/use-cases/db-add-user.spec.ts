@@ -28,4 +28,12 @@ describe('DbAddUser Use Case', () => {
     const user = new User({ ...makeUserModel(), id: response?.id })
     expect(addSpy).toHaveBeenCalledWith(user)
   })
+
+  it('Should return an User on success', async () => {
+    const { sut } = makeSut()
+    const user = await sut.add(makeUserModel())
+
+    expect(user).toEqual(new User({ ...makeUserModel(), id: user?.id }))
+    expect(user).toBeInstanceOf(User)
+  })
 })
