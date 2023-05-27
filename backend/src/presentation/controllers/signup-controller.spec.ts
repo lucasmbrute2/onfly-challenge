@@ -1,21 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { SignUpController } from './signup-controller'
-import { AddUser, AddUserModel } from '@/src/domain/use-cases/add-user'
-import { User } from '@/src/domain/entities/user'
-import { makeUserModel } from '@/src/application/tests/factories'
-
-const makeFakeAccount = (): User => {
-  return new User(makeUserModel())
-}
-
-const makeAddAccount = (): AddUser => {
-  class AddUserStub implements AddUser {
-    async add(user: AddUserModel): Promise<User> {
-      return Promise.resolve(makeFakeAccount())
-    }
-  }
-  return new AddUserStub()
-}
+import { AddUser } from '@/src/domain/use-cases/add-user'
+import { makeAddAccount } from '../tests/factories'
 
 interface SutTypes {
   sut: SignUpController
