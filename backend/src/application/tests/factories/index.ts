@@ -1,6 +1,7 @@
 import { User } from '@/src/domain/entities/user'
 import { AddUserRepository, FindUserByIdRepository } from '../../protocols/user'
 import { AddUserModel } from '@/src/domain/use-cases/add-user'
+import { Hasher } from '../../protocols/cryptography'
 
 export const makeUserModel = (): AddUserModel => ({
   id: 'any-id',
@@ -27,4 +28,14 @@ export const makeFindUserByIdRepository = (): FindUserByIdRepository => {
   }
 
   return new FindUserByIdRepositoryStub()
+}
+
+export const makeHasherStub = (): Hasher => {
+  class HasherStub implements Hasher {
+    async hash(plaintext: string): Promise<string> {
+      return Promise.resolve(plaintext)
+    }
+  }
+
+  return new HasherStub()
 }
