@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
-import { AddUserRepository, FindUserByIdRepository } from '../protocols/user'
+import { AddUserRepository } from '../protocols/user'
 import {
   makeAddUserRepository,
-  makeFindUserByIdRepository,
+  makeFindByUsernameRepositoryStub,
   makeHasherStub,
   makeUserModel,
 } from '../tests/factories'
@@ -10,29 +10,30 @@ import { DbAddUserUseCase } from './db-add-user'
 import { User } from '@/src/domain/entities/user'
 import { makeUser } from '@/src/domain/entities/tests/factories'
 import { Hasher } from '../protocols/cryptography'
+import { FindUserByUsernameRepository } from '../protocols/user/find-user-by-username'
 
 interface SutTypes {
   sut: DbAddUserUseCase
   addUserRepositoryStub: AddUserRepository
-  findUserByIdRepository: FindUserByIdRepository
+  findUserByUsernameRepository: FindUserByUsernameRepository
   hasherStub: Hasher
 }
 
 const makeSut = (): SutTypes => {
   const addUserRepositoryStub = makeAddUserRepository()
-  const findUserByIdRepository = makeFindUserByIdRepository()
+  const findUserByUsernameRepository = makeFindByUsernameRepositoryStub()
   const hasherStub = makeHasherStub()
 
   const dbAddUserUseCase = new DbAddUserUseCase(
     hasherStub,
     addUserRepositoryStub,
-    findUserByIdRepository,
+    findUserByUsernameRepository,
   )
 
   return {
     sut: dbAddUserUseCase,
     addUserRepositoryStub,
-    findUserByIdRepository,
+    findUserByUsernameRepository,
     hasherStub,
   }
 }
@@ -67,10 +68,11 @@ describe('DbAddUser Use Case', () => {
   })
 
   it('Should return null if FindUserByIdRepository reach an user', async () => {
-    const { sut, findUserByIdRepository } = makeSut()
-    vi.spyOn(findUserByIdRepository, 'findById').mockReturnValueOnce(
-      Promise.resolve(makeUser()),
-    )
+    const { sut, findUserByUsernameRepository } = makeSut()
+    vi.spyOn(
+      findUserByUsernameRepository,
+      'findByUsername',
+    ).mockReturnValueOnce(Promise.resolve(makeUser()))
     const response = await sut.add(makeUserModel())
     expect(response).toBe(null)
   })

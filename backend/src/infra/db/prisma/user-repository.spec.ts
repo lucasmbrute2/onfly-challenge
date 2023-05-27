@@ -37,7 +37,7 @@ describe('UserRepository', () => {
   })
 
   // add()
-  it('Should return an user on success', async () => {
+  it('Should return an User on success', async () => {
     const sut = makeSut()
     const user = await sut.add(makeUser())
 
@@ -56,6 +56,22 @@ describe('UserRepository', () => {
     })
 
     const user = await sut.findById(userFromFactory.id)
+
+    expect(user).toMatchObject(makeUser({ id: user.id }))
+    expect(user).toBeInstanceOf(User)
+  })
+
+  // findByUsername
+
+  it('Should return an User on success', async () => {
+    const sut = makeSut()
+    const userFromFactory = makeUser()
+
+    await prisma.user.create({
+      data: PrismaUserMapper.toPrisma(userFromFactory),
+    })
+
+    const user = await sut.findByUsername(userFromFactory.username)
 
     expect(user).toMatchObject(makeUser({ id: user.id }))
     expect(user).toBeInstanceOf(User)
