@@ -42,7 +42,7 @@ describe('DbAddUser Use Case', () => {
 
   it('Should return null if FindUserByIdRepository reach an user', async () => {
     const { sut, findUserByIdRepository } = makeSut()
-    vi.spyOn(findUserByIdRepository, 'find').mockReturnValueOnce(
+    vi.spyOn(findUserByIdRepository, 'findById').mockReturnValueOnce(
       Promise.resolve(makeUser()),
     )
     const response = await sut.add(makeUserModel())

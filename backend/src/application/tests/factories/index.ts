@@ -21,7 +21,7 @@ export const makeAddUserRepository = (): AddUserRepository => {
 
 export const makeFindUserByIdRepository = (): FindUserByIdRepository => {
   class FindUserByIdRepositoryStub implements FindUserByIdRepository {
-    async find(id: string): Promise<User> {
+    async findById(id: string): Promise<User> {
       return Promise.resolve(null)
     }
   }

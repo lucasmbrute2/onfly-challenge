@@ -9,7 +9,7 @@ export class DbAddUserUseCase {
   ) {}
 
   async add(userData: AddUserModel): Promise<User | null> {
-    let user = await this.findUserByIdRepository.find(userData.id)
+    let user = await this.findUserByIdRepository.findById(userData.id)
     if (user) return null
 
     user = new User(userData)
