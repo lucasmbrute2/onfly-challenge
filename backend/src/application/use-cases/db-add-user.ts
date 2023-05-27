@@ -1,10 +1,10 @@
 import { User } from '@/src/domain/entities/user'
 import { AddUserRepository } from '../protocols/user'
-import { AddUserModel } from '@/src/domain/use-cases/add-user'
+import { AddUserModel, AddUser } from '@/src/domain/use-cases/add-user'
 import { Hasher } from '../protocols/cryptography'
 import { FindUserByUsernameRepository } from '../protocols/user/find-user-by-username'
 
-export class DbAddUserUseCase {
+export class DbAddUserUseCase implements AddUser {
   constructor(
     private readonly hasher: Hasher,
     private readonly addUserRepository: AddUserRepository,
