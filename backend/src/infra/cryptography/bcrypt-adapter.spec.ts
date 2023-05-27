@@ -15,16 +15,6 @@ vi.mock('bcrypt', () => {
   }
 })
 
-// vi.mock('bcrypt', () => ({
-//   async hash(): Promise<string> {
-//     return 'hash'
-//   },
-
-//   async compare(): Promise<boolean> {
-//     return true
-//   },
-// }))
-
 const salt = 12
 const makeSut = (): BcryptAdapter => {
   return new BcryptAdapter(salt)
