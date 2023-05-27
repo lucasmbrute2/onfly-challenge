@@ -3,22 +3,28 @@ import { AddUserRepository, FindUserByIdRepository } from '../protocols/user'
 import {
   makeAddUserRepository,
   makeFindUserByIdRepository,
+  makeHasherStub,
   makeUserModel,
 } from '../tests/factories'
 import { DbAddUserUseCase } from './db-add-user'
 import { User } from '@/src/domain/entities/user'
 import { makeUser } from '@/src/domain/entities/tests/factories'
+import { Hasher } from '../protocols/cryptography'
 
 interface SutTypes {
   sut: DbAddUserUseCase
   addUserRepositoryStub: AddUserRepository
   findUserByIdRepository: FindUserByIdRepository
+  hasherStub: Hasher
 }
 
 const makeSut = (): SutTypes => {
   const addUserRepositoryStub = makeAddUserRepository()
   const findUserByIdRepository = makeFindUserByIdRepository()
+  const hasherStub = makeHasherStub()
+
   const dbAddUserUseCase = new DbAddUserUseCase(
+    hasherStub,
     addUserRepositoryStub,
     findUserByIdRepository,
   )
@@ -27,10 +33,21 @@ const makeSut = (): SutTypes => {
     sut: dbAddUserUseCase,
     addUserRepositoryStub,
     findUserByIdRepository,
+    hasherStub,
   }
 }
 
 describe('DbAddUser Use Case', () => {
+  it('Should call Hasher with correct plaintext', async () => {
+    const { sut, hasherStub } = makeSut()
+    const hashSpy = vi.spyOn(hasherStub, 'hash')
+
+    const addAccountParams = makeUserModel()
+    await sut.add(addAccountParams)
+
+    expect(hashSpy).toHaveBeenCalledWith(addAccountParams.password)
+  })
+
   it('Should call AddUserRepository with correct values', async () => {
     const { addUserRepositoryStub, sut } = makeSut()
     const addSpy = vi.spyOn(addUserRepositoryStub, 'add')
