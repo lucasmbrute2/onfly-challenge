@@ -5,6 +5,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { PrismaUserRepository } from './user-repository'
 import { makeUser } from '@/src/domain/entities/tests/factories'
 import { User } from '@/src/domain/entities/user'
+import { PrismaUserMapper } from './mappers/user-mapper'
 
 const makeSut = (): PrismaUserRepository => {
   return new PrismaUserRepository()
@@ -43,5 +44,20 @@ describe('UserRepository', () => {
     expect(user).toBeInstanceOf(User)
     expect(user).toBeTruthy()
     expect(user).toEqual(makeUser())
+  })
+
+  // findById
+  it('Should return an User on success', async () => {
+    const sut = makeSut()
+    const userFromFactory = makeUser()
+
+    await prisma.user.create({
+      data: PrismaUserMapper.toPrisma(userFromFactory),
+    })
+
+    const user = await sut.findById(userFromFactory.id)
+
+    expect(user).toMatchObject(makeUser({ id: user.id }))
+    expect(user).toBeInstanceOf(User)
   })
 })
