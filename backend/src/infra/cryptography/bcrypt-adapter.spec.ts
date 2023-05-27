@@ -54,4 +54,35 @@ describe('Bcrypt adapter', () => {
       await expect(promise).rejects.toThrow()
     })
   })
+
+  describe('compare()', () => {
+    it('Should call compare with correct values', async () => {
+      const sut = makeSut()
+      const compareSpy = vi.spyOn(bcrypt, 'compare')
+      await sut.compare('any_value', 'any_hash')
+      expect(compareSpy).toHaveBeenCalledWith('any_value', 'any_hash')
+    })
+
+    it('Should return true when compare succeeds', async () => {
+      const sut = makeSut()
+      const isValid = await sut.compare('any_value', 'any_hash')
+      expect(isValid).toBe(true)
+    })
+
+    it('Should return false when compare fails', async () => {
+      const sut = makeSut()
+      vi.spyOn(bcrypt, 'compare').mockImplementationOnce(() => false)
+      const isValid = await sut.compare('any_value', 'any_hash')
+      expect(isValid).toBe(false)
+    })
+
+    it('Should throw if compare throws', async () => {
+      const sut = makeSut()
+      vi.spyOn(bcrypt, 'compare').mockRejectedValueOnce(
+        Promise.resolve(new Error()),
+      )
+      const promise = sut.compare('any_value', 'any_hash')
+      await expect(promise).rejects.toThrow()
+    })
+  })
 })
