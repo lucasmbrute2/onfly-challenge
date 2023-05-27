@@ -3,8 +3,9 @@ import { SignUpController } from './signup-controller'
 import { AddUser } from '@/src/domain/use-cases/add-user'
 import { makeAddAccount } from '../tests/factories'
 import { ServerError } from '../errors/server-error'
-import { created, serverError } from '../helpers/http-helper'
+import { badRequest, created, serverError } from '../helpers/http-helper'
 import { makeUserModel } from '@/src/application/tests/factories'
+import { BadRequestError } from '../errors/bad-request-error'
 
 interface SutTypes {
   sut: SignUpController
@@ -66,5 +67,19 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse).toEqual(created(httpResponse.body))
     expect(httpResponse.statusCode).toBe(201)
+  })
+
+  it('Should return 400 if incorrect data is provided', async () => {
+    const { sut, addUserStub } = makeSut()
+    vi.spyOn(addUserStub, 'add').mockReturnValueOnce(Promise.resolve(null))
+
+    const httpResponse = await sut.handle({
+      body: makeUserModel(),
+    })
+
+    expect(httpResponse).toEqual(
+      badRequest(new BadRequestError('User already exists')),
+    )
+    expect(httpResponse.statusCode).toBe(400)
   })
 })
